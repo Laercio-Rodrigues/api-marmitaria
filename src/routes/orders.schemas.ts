@@ -34,3 +34,12 @@ export const updateOrderStatusBodySchema = z.object({
     'CANCELLED',
   ]),
 });
+
+export const assignCourierBodySchema = z.object({
+  courierId: z.string().length(24),
+});
+
+export const courierLocationBodySchema = z.object({
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
+});

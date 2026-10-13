@@ -1,10 +1,12 @@
-import jwt from "@fastify/jwt";
-import Fastify from "fastify";
-import { env } from "./env.js";
-import { authenticatePlugin } from "./plugins/authenticate.js";
-import { authRoutes } from "./routes/auth.js";
-import { orderRoutes } from "./routes/orders.js";
-import { productRoutes } from "./routes/products.js";
+import jwt from '@fastify/jwt';
+import Fastify from 'fastify';
+import { ZodError } from 'zod';
+import { env } from './env.js';
+import { authenticatePlugin } from './plugins/authenticate.js';
+import { authRoutes } from './routes/auth.js';
+import { orderRoutes } from './routes/orders.js';
+import { productRoutes } from './routes/products.js';
+import { trackingRoutes } from './routes/tracking.js';
 
 export function buildApp() {
   const app = Fastify({
@@ -15,13 +17,22 @@ export function buildApp() {
     secret: env.JWT_SECRET,
   });
 
+    app.setErrorHandler((error, _request, reply) => {
+    if (error instanceof ZodError) {
+      return reply.status(400).send({ message: 'Dados inválidos.', issues: error.issues });
+    }
+
+    return reply.send(error);
+  });
+
   app.register(authRoutes);
   app.register(authenticatePlugin);
-  app.register(productRoutes)
-  app.register(orderRoutes)
+  app.register(productRoutes);
+  app.register(orderRoutes);
+  app.register(trackingRoutes);
 
-  app.get("/health", async () => {
-    return { status: "ok" };
+  app.get('/health', async () => {
+    return { status: 'ok' };
   });
 
   return app;

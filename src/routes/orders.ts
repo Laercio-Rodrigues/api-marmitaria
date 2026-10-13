@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify';
+import { publishOrderEvent } from '../lib/order-events.js';
 import { prisma } from '../lib/prisma.js';
 import { authorize } from '../plugins/authorize.js';
 import {
@@ -91,6 +92,8 @@ export async function orderRoutes(app: FastifyInstance) {
       if (!order) {
         return reply.status(404).send({ message: 'Pedido não encontrado.' });
       }
+
+      publishOrderEvent(order.id, { type: 'status', status: order.status });
 
       return { order };
     },

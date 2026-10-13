@@ -1,8 +1,8 @@
-import "@fastify/jwt";
+import '@fastify/jwt';
 
-declare module "@fastify/jwt" {
+declare module '@fastify/jwt' {
   interface FastifyJWT {
-    payload: { sub: string; role: "CUSTOMER" | "ADMIN" };
-    user: { sub: string; role: "CUSTOMER" | "ADMIN" };
+    payload: { sub: string; role: 'CUSTOMER' | 'ADMIN' | 'COURIER' };
+    user: { sub: string; role: 'CUSTOMER' | 'ADMIN' | 'COURIER' };
   }
 }
